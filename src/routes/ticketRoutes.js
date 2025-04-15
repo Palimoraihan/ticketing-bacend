@@ -7,12 +7,37 @@ const ticketController = require('../controllers/ticketController');
 router.use(auth);
 
 // Customer routes
-router.post('/', requireRole(['customer']), ticketController.createTicket);
-router.get('/', ticketController.getTickets);
-router.get('/:id', ticketController.getTicket);
+router.post('/', 
+  requireRole(['customer']),
+  ticketController.upload.array('attachments', 5), // Allow up to 5 files
+  ticketController.createTicket
+);
+
+router.get('/',
+  ticketController.getTickets
+);
 
 // Agent and Admin routes
-router.patch('/:id', requireRole(['agent', 'admin']), ticketController.updateTicket);
-router.post('/:id/responses', ticketController.addResponse);
+router.get('/:id', 
+  requireRole(['agent', 'admin']),
+  ticketController.getTicket
+);
+
+router.patch('/:id', 
+  requireRole(['agent', 'admin']),
+  ticketController.updateTicket
+);
+
+router.post('/:id/responses',
+  requireRole(['agent', 'admin']),
+  ticketController.upload.array('attachments', 5), // Allow up to 5 files
+  ticketController.addResponse
+);
+
+// File download route
+router.get('/attachments/:fileId',
+  requireRole(['customer', 'agent', 'admin']),
+  ticketController.downloadFile
+);
 
 module.exports = router; 
