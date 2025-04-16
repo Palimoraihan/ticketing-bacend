@@ -1,151 +1,163 @@
-# Ticketing System
+# Ticketing System Backend
 
-A comprehensive ticketing system built with Node.js, Express, and Sequelize.
+A robust backend system for managing support tickets, built with Node.js, Express, and Sequelize.
 
 ## Features
 
-### User Management
-- User registration and authentication
-- Role-based access control (Customer, Agent, Admin)
-- Profile management
+- **Authentication & Authorization**
+  - JWT-based authentication
+  - Role-based access control (Admin, Agent, Customer)
+  - Secure password handling
 
-### Ticket Management
-- Create, view, update, and close tickets
-- Priority levels (low, medium, high, critical)
-- Tag-based categorization
-- Ticket responses and communication
-- Automatic ticket closure based on SLA
+- **Ticket Management**
+  - Create, read, update, and delete tickets
+  - File attachments support
+  - Ticket responses and comments
+  - Priority and status tracking
 
-### Group Management
-- Create and manage agent groups
-- Assign tags to groups
-- Assign agents to groups
+- **Group Management**
+  - Create and manage support groups
+  - Assign agents to groups
+  - Group-specific tags and SLAs
 
-### SLA (Service Level Agreement) Management
-- Define response and resolution times for each priority level
-- Automatic due date calculation based on priority
-- Automatic ticket closure when response time is exceeded
+- **Dashboard Analytics**
+  - Role-specific dashboards
+  - Ticket statistics and metrics
+  - Performance tracking
 
-### Tag Management
-- Create and manage tags
-- Assign tags to tickets and groups
-- Filter tickets by tags
+## Tech Stack
+
+- **Runtime**: Node.js
+- **Framework**: Express.js
+- **Database**: MySQL
+- **ORM**: Sequelize
+- **Authentication**: JWT
+- **File Handling**: Multer
+
+## Project Structure
+
+```
+backend/
+├── config/
+│   └── database.js      # Database configuration
+├── controllers/         # Route controllers
+├── middleware/          # Custom middleware
+├── models/             # Database models
+├── routes/             # API routes
+├── uploads/            # File uploads directory
+└── src/
+    └── index.js        # Application entry point
+```
+
+## Models
+
+- **User**: Manages user accounts and authentication
+- **Ticket**: Core ticket management
+- **Group**: Support group organization
+- **Tag**: Ticket categorization
+- **GroupAgent**: Agent-group associations
+- **TicketResponse**: Ticket comments and updates
+- **FileAttachment**: File management
+- **SLAPolicy**: Service level agreements
 
 ## API Endpoints
 
 ### Authentication
-- `POST /api/users/register` - Register a new user
-- `POST /api/users/login` - Login user
-- `GET /api/users/profile` - Get user profile
-- `PATCH /api/users/profile` - Update user profile
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
 
 ### Tickets
-- `POST /api/tickets` - Create a new ticket
-- `GET /api/tickets` - Get all tickets (filtered by user role)
-- `GET /api/tickets/:id` - Get a specific ticket
-- `PATCH /api/tickets/:id` - Update a ticket
-- `POST /api/tickets/:id/responses` - Add a response to a ticket
-
-### Admin
-- `POST /api/admin/tags` - Create a new tag
-- `GET /api/admin/tags` - Get all tags
-- `PATCH /api/admin/tags/:id` - Update a tag
-- `POST /api/admin/groups` - Create a new group
-- `GET /api/admin/groups` - Get all groups
-- `PATCH /api/admin/groups/:id` - Update a group
-- `POST /api/admin/sla-policies` - Create a new SLA policy
-- `GET /api/admin/sla-policies` - Get all SLA policies
-- `PATCH /api/admin/sla-policies/:id` - Update an SLA policy
-
-## Database Schema
-
-### Users
-- id (Primary Key)
-- name
-- email
-- password
-- role (customer, agent, admin)
-
-### Tickets
-- id (Primary Key)
-- title
-- description
-- status (open, in_progress, resolved, closed)
-- priority (low, medium, high, critical)
-- responseDueDate
-- resolutionDueDate
-- customerId (Foreign Key)
-- agentId (Foreign Key)
+- `GET /api/tickets` - List tickets
+- `POST /api/tickets` - Create ticket
+- `GET /api/tickets/:id` - Get ticket details
+- `PUT /api/tickets/:id` - Update ticket
+- `POST /api/tickets/:id/responses` - Add response
+- `POST /api/tickets/:id/attachments` - Add attachment
 
 ### Groups
-- id (Primary Key)
-- name
-- description
+- `GET /api/groups` - List groups
+- `POST /api/groups` - Create group
+- `PUT /api/groups/:id` - Update group
+- `DELETE /api/groups/:id` - Delete group
 
-### Tags
-- id (Primary Key)
-- name
-- description
-
-### SLAPolicies
-- id (Primary Key)
-- priority (low, medium, high, critical)
-- responseTime (in hours)
-- resolutionTime (in hours)
-
-### TicketResponses
-- id (Primary Key)
-- content
-- ticketId (Foreign Key)
-- userId (Foreign Key)
-
-## Automatic Features
-
-### Ticket Due Dates
-- Response due date is calculated based on ticket priority and SLA policy
-- Resolution due date is calculated based on ticket priority and SLA policy
-- Due dates are automatically updated when ticket priority changes
-
-### Automatic Ticket Closure
-- System checks for overdue tickets every minute
-- Tickets are automatically closed when response time is exceeded
-- Closed tickets cannot be reopened without admin intervention
+### Dashboard
+- `GET /api/dashboard/customer` - Customer dashboard
+- `GET /api/dashboard/agent` - Agent dashboard
+- `GET /api/dashboard/admin` - Admin dashboard
 
 ## Setup
 
-1. Clone the repository
-2. Install dependencies:
+1. Install dependencies:
    ```bash
    npm install
    ```
-3. Create a `.env` file with the following variables:
-   ```
-   DB_HOST=your_database_host
-   DB_USER=your_database_user
-   DB_PASS=your_database_password
-   DB_NAME=your_database_name
+
+2. Configure environment variables:
+   ```env
+   PORT=3000
+   DB_HOST=localhost
+   DB_USER=your_username
+   DB_PASSWORD=your_password
+   DB_NAME=ticketing_system
    JWT_SECRET=your_jwt_secret
    ```
-4. Run the database migrations:
+
+3. Initialize database:
    ```bash
-   npm run migrate
+   npx sequelize-cli db:create
+   npx sequelize-cli db:migrate
    ```
-5. Start the server:
+
+4. Start the server:
    ```bash
    npm start
    ```
 
 ## Development
 
-- The system uses Sequelize as ORM
-- JWT for authentication
-- Role-based middleware for access control
-- Automatic ticket monitoring job for SLA compliance
+- Run tests:
+  ```bash
+  npm test
+  ```
+
+- Run in development mode:
+  ```bash
+  npm run dev
+  ```
+
+## Security
+
+- JWT token-based authentication
+- Password hashing with bcrypt
+- Role-based access control
+- Input validation and sanitization
+- Secure file upload handling
+
+## Error Handling
+
+- Centralized error handling
+- Custom error classes
+- Detailed error responses
+- Logging and monitoring
+
+## Recent Updates
+
+- Implemented role-based dashboards
+- Added ticket statistics and metrics
+- Enhanced group and agent management
+- Improved file attachment handling
+- Optimized database queries
+- Added performance tracking
 
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch
+2. Create a feature branch
 3. Commit your changes
 4. Push to the branch
-5. Create a new Pull Request 
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License. 

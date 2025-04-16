@@ -5,7 +5,7 @@ const userController = require('../controllers/userController');
 
 // Public routes
 router.post('/register', userController.register);
-router.get('/login', userController.login);
+router.post('/login', userController.login);
 
 // Protected routes
 router.get('/profile', auth, userController.getProfile);

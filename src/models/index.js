@@ -29,6 +29,11 @@ Tag.belongsToMany(Group, { through: GroupTag, foreignKey: 'tagId', as: 'groups' 
 // Group associations
 Group.belongsToMany(Tag, { through: GroupTag, foreignKey: 'groupId', as: 'tags' });
 Group.belongsToMany(User, { through: GroupAgent, foreignKey: 'groupId', as: 'users' });
+Group.hasMany(GroupAgent, { foreignKey: 'groupId', as: 'groupAgents' });
+
+// GroupAgent associations
+GroupAgent.belongsTo(Group, { foreignKey: 'groupId', as: 'group' });
+GroupAgent.belongsTo(User, { foreignKey: 'agentId', as: 'agent' });
 
 // TicketResponse associations
 TicketResponse.belongsTo(Ticket, { foreignKey: 'ticketId' });
