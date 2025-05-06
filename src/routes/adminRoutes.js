@@ -6,6 +6,12 @@ const adminController = require('../controllers/adminController');
 // All routes require admin role
 router.use(auth, requireRole(['admin']));
 
+// Dashboard
+router.get('/dashboard', adminController.getAdminDashboard);
+
+// Ticket Management
+router.get('/tickets', adminController.getAllTickets);
+
 // Tag routes
 router.post('/tags', adminController.createTag);
 router.get('/tags', adminController.getTags);

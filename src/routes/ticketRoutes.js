@@ -19,7 +19,7 @@ router.get('/',
 
 // Agent and Admin routes
 router.get('/:id', 
-  requireRole(['agent', 'admin']),
+  // requireRole(['agent', 'admin']),
   ticketController.getTicket
 );
 
